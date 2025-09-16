@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="jumbotron">
+            <h1 class="display-4">Welcome to Encrypted Messenger</h1>
+            <p class="lead">Send end-to-end encrypted messages to other users. Your privacy is our priority.</p>
+            <hr class="my-4">
+            <p>Only the intended recipient can decrypt and read your messages.</p>
+            {% if not current_user.is_authenticated %}
+                <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}" role="button">Get Started</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

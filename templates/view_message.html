@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Message Details</h2>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h4>
+            {% if current_user.id == message.recipient_id %}
+                From: {{ message.sender.username }}
+            {% else %}
+                To: {{ message.recipient.username }}
+            {% endif %}
+        </h4>
+    </div>
+    <div class="card-body">
+        <p><strong>Sent:</strong> {{ message.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        {% if current_user.id == message.recipient_id %}
+            <p><strong>Status:</strong> {% if message.is_read %}Read{% else %}Unread{% endif %}</p>
+        {% endif %}
+        
+        <h5>Encrypted Content:</h5>
+        <div class="encrypted-content">
+            {{ message.encrypted_content }}
+        </div>
+        
+        {% if decrypted_content %}
+            <h5 class="mt-4">Decrypted Message:</h5>
+            <div class="decrypted-content">
+                {{ decrypted_content }}
+            </div>
+        {% endif %}
+        
+        {% if decryption_error %}
+            <div class="alert alert-danger mt-4">{{ decryption_error }}</div>
+        {% endif %}
+        
+        {% if not decrypted_content %}
+            <h5 class="mt-4">Decrypt Message:</h5>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-control", placeholder="Enter your password to decrypt") }}
+                    {% if form.password.errors %}
+                        <div class="text-danger">
+                            {% for error in form.password.errors %}
+                                <small>{{ error }}</small><br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    {{ form.submit(class="btn btn-success") }}
+                </div>
+            </form>
+        {% endif %}
+    </div>
+    <div class="card-footer">
+        <form method="POST" action="{{ url_for('delete_message', message_id=message.id) }}" 
+              onsubmit="return confirm('Are you sure you want to delete this message?')" class="d-inline">
+            <button type="submit" class="btn btn-danger btn-sm">Delete Message</button>
+        </form>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary btn-sm">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

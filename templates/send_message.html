@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Send Encrypted Message</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.recipient.label(class="form-label") }}
+                        {{ form.recipient(class="form-control", placeholder="Enter recipient's username") }}
+                        {% if form.recipient.errors %}
+                            <div class="text-danger">
+                                {% for error in form.recipient.errors %}
+                                    <small>{{ error }}</small><br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if ask_recipient_password %}
+                    <div class="mb-3">
+                        <label for="recipient_password" class="form-label">Recipient's Password</label>
+                        <input type="password" class="form-control" id="recipient_password" name="recipient_password" 
+                               placeholder="Enter recipient's password to encrypt message" required>
+                        <div class="form-text">
+                            🔐 The message will be encrypted so only the recipient can read it.
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        {{ form.content.label(class="form-label") }}
+                        {{ form.content(class="form-control", rows="5", placeholder="Type your secret message here...") }}
+                        {% if form.content.errors %}
+                            <div class="text-danger">
+                                {% for error in form.content.errors %}
+                                    <small>{{ error }}</small><br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+{% endblock %}
